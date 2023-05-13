@@ -1,0 +1,87 @@
+using System;
+using System.IO;
+using System.Collections.Generic;
+using System.Text;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
+
+namespace sm65
+{
+    public class Game1 : Game
+    {
+        private GraphicsDeviceManager graphics;
+        private SpriteBatch spriteBatch;
+        public static Color[] kolor = new Color[6000];
+        public static int[,] stage = new int[120, 5];
+        Texture2D t;
+        Texture2D texture;
+        SpriteFont font;
+        Player player = new Player();
+        Levels level = new Levels();
+        Vector2 velo = new Vector2();
+        int selectedlevel = 0;
+
+        public Game1()
+        {
+            graphics = new GraphicsDeviceManager(this);
+            Content.RootDirectory = "Content";
+            IsMouseVisible = true;
+        }
+
+        protected override void Initialize()
+        {
+            graphics.PreferredBackBufferWidth = 800;
+            graphics.PreferredBackBufferHeight = 600;
+            graphics.ApplyChanges();
+            base.Initialize();
+        }
+
+        protected override void LoadContent()
+        {
+            spriteBatch = new SpriteBatch(GraphicsDevice);
+            player.Position = new Vector2(50 * 48, 48);
+            font = Content.Load<SpriteFont>("font");
+            t = Content.Load<Texture2D>("b" + selectedlevel);
+            t.GetData<Color>(0, new Rectangle(0, 0, 120, 50), kolor, 0, 6000);
+            stage = level.GetLevel(selectedlevel);
+        }
+
+        protected override void Update(GameTime gameTime)
+        {
+            KeyboardState klavye = Keyboard.GetState();
+            if (klavye.IsKeyDown(Player.keys[2]))
+                velo = player.Move(Player.keys[2]);
+            else if (klavye.IsKeyDown(Player.keys[3]))
+                velo = player.Move(Player.keys[3]);
+            else
+                velo = player.Move(Player.keys[0]);
+            if (klavye.IsKeyDown(Player.keys[4]))
+                player.JumpAndFall(Player.keys[4]);
+            else
+                player.JumpAndFall(Player.keys[0]);
+            base.Update(gameTime);
+        }
+
+        protected override void Draw(GameTime gameTime)
+        {
+            GraphicsDevice.Clear(Color.CornflowerBlue);
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullNone);
+            texture = Content.Load<Texture2D>("tiles" + selectedlevel);
+            for (int x = 0; x < 120; x++)
+            {
+                for (int y = 0; y < 50; y++)
+                {
+                    if (stage[x, y] > 0 && (x * 48) - (int)player.Camera.X > -48 && (x * 48) - (int)player.Camera.X < 848 && (y * 48) - (int)player.Camera.Y > -48 && (y * 48) - (int)player.Camera.Y < 648)
+                        spriteBatch.Draw(texture, new Rectangle((x * 48) - (int)player.Camera.X, (y * 48) - (int)player.Camera.Y, 48, 48), new Rectangle(((stage[x, y] - 1) % 20) * 16, ((stage[x, y] - 1) / 20) * 16, 16, 16), Color.White, 0f, new Vector2(8, 8), SpriteEffects.None, 0);
+                }
+            }
+            texture = Content.Load<Texture2D>("player");
+            spriteBatch.Draw(texture, new Rectangle((int)(player.Position.X - player.Camera.X), (int)(player.Position.Y - player.Camera.Y), 48, 96), new Rectangle(player.Animate(), 0, 16, 32), Color.White, 0f, new Vector2(8, 16), player.Direction, 0); ;
+            spriteBatch.DrawString(font, (int)velo.X + ", " + (int)velo.Y, new Vector2(10, 10), Color.Red);
+            spriteBatch.DrawString(font, (300 - (int)player.Position.Y) + "", new Vector2(10, 30), Color.Red);
+            spriteBatch.End();
+            base.Draw(gameTime);
+        }
+    }
+}
