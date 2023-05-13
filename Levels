@@ -1,0 +1,83 @@
+using System;
+using System.Collections.Generic;
+using System.Text;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
+
+namespace sm65
+{
+    class Levels
+    {
+        private int[,] tiles = new int[120, 50];
+
+        public int[,] GetLevel(int levelid)
+        {
+            if (levelid == 0)
+            {
+                for (int i = 0; i < 6000; i++)
+                {
+                    if (Game1.kolor[i] == Color.White)
+                        tiles[i % 120, i / 120] = 0;
+                    else if (Game1.kolor[i].B == 0)
+                        tiles[i % 120, i / 120] = Game1.kolor[i].R;
+                    else if (Game1.kolor[i].B == 255)
+                        tiles[i % 120, i / 120] = Game1.kolor[i].R + 40;
+                }
+            }
+            else if (levelid == 1)
+            {
+                for (int i = 0; i < 6000; i++)
+                {
+                    if (Game1.kolor[i] == Color.White)
+                        tiles[i % 120, i / 120] = 0;
+                    else if (Game1.kolor[i].B == 0)
+                        tiles[i % 120, i / 120] = Game1.kolor[i].R;
+                    else if (Game1.kolor[i].B == 255)
+                        tiles[i % 120, i / 120] = Game1.kolor[i].R + 40;
+                }
+            }
+            else if (levelid == 2)
+            {
+
+            }
+            else if (levelid == 3)
+            {
+
+            }
+            else if (levelid == 4)
+            {
+
+            }
+            else if (levelid == 5)
+            {
+
+            }
+            else if (levelid == 6)
+            {
+
+            }
+            else if (levelid == 7)
+            {
+
+            }
+            else if (levelid == 8)
+            {
+
+            }
+            else if (levelid == 9)
+            {
+
+            }
+            else if (levelid == 10)
+            {
+
+            }
+            else if (levelid == 11)
+            {
+
+            }
+            return tiles;
+        }
+    }
+}
