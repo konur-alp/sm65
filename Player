@@ -1,0 +1,365 @@
+using System;
+using System.Collections.Generic;
+using System.Text;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
+
+namespace sm65
+{
+    class Player
+    {
+        private Vector2 velocity;
+        private int animation;
+        private bool carry;
+        private int C = 0;
+        private int wd = 0;
+
+        public Vector2 Position;
+        public SpriteEffects Direction;
+        public Vector2 Camera;
+
+        public static Keys[] keys = { Keys.W, Keys.S, Keys.A, Keys.D, Keys.NumPad3, Keys.NumPad2, Keys.NumPad1 }; //0:yukarı, 1:aşağı, 2:sol, 3:sağ, 4:zıplama, 5:taşıma, 6:diyalog
+
+        private const float maxvelocity = 6.25f;
+        private const float maxcarryvelocity = 3; // ziplama maks = 4 gibi düşünülerek olacak
+        private const float maxfallvelocity = 15;
+        private const float minvelocity = 0;
+        private const float accelaration = 0.15f;
+        public Player()
+        {
+            velocity = Vector2.Zero;
+            carry = false;
+            animation = 0;
+            Position = new Vector2(50 * 48, 48);
+            Direction = SpriteEffects.None;
+            Camera = Vector2.Zero;
+        }
+
+        public Vector2 Move(Keys direction)
+        {
+            bool ground = OnGround();
+            if (direction == keys[2] && ((Game1.stage[((int)Position.X + 10) / 48, ((int)Position.Y + 60) / 48] == 0 || Game1.stage[((int)Position.X + 10) / 48, ((int)Position.Y + 60) / 48] > 40) && (Game1.stage[((int)Position.X + 10) / 48, ((int)Position.Y - 12) / 48] == 0 || Game1.stage[((int)Position.X + 10) / 48, ((int)Position.Y - 12) / 48] > 40)) && (Game1.stage[((int)Position.X + 10) / 48, ((int)Position.Y + 24) / 48] == 0 || Game1.stage[((int)Position.X + 10) / 48, ((int)Position.Y + 24) / 48] > 40))
+            {
+                if (!carry)
+                {
+                    if (ground)
+                    {
+                        Direction = SpriteEffects.FlipHorizontally;
+                        if (velocity.X > 0)
+                        {
+                            velocity.X -= 2.5f * accelaration;
+                        }
+                        else if (velocity.X > -minvelocity)
+                        {
+                            velocity.X = -minvelocity;
+                        }
+                        else if (velocity.X > -maxvelocity)
+                        {
+                            velocity.X -= accelaration;
+                        }
+                    }
+                    else
+                    {
+                        if (velocity.X > 0)
+                        {
+                            velocity.X -= 1.25f * accelaration;
+                        }
+                        else if (velocity.X > -minvelocity)
+                        {
+                            velocity.X = -minvelocity;
+                        }
+                        else if (velocity.X > -maxvelocity)
+                        {
+                            velocity.X -= accelaration / 2;
+                        }
+                    }
+                }
+                else
+                {
+                    if (ground)
+                    {
+                        Direction = SpriteEffects.FlipHorizontally;
+                        if (velocity.X > 0)
+                        {
+                        }
+                        else if (velocity.X > -minvelocity)
+                        {
+
+                        }
+                        else if (velocity.X > -maxcarryvelocity)
+                        {
+
+                        }
+                    }
+                    else
+                    {
+                        if (velocity.X > 0)
+                        {
+                        }
+                        else if (velocity.X > -minvelocity)
+                        {
+
+                        }
+                        else if (velocity.X > -maxcarryvelocity)
+                        {
+
+                        }
+                    }
+                }
+            }
+            else if (direction == keys[3] && ((Game1.stage[((int)Position.X + 38) / 48, ((int)Position.Y + 60) / 48] == 0 || Game1.stage[((int)Position.X + 38) / 48, ((int)Position.Y + 60) / 48] > 40) && (Game1.stage[((int)Position.X + 38) / 48, ((int)Position.Y - 12) / 48] == 0 || Game1.stage[((int)Position.X + 38) / 48, ((int)Position.Y - 12) / 48] > 40) && (Game1.stage[((int)Position.X + 38) / 48, ((int)Position.Y + 24) / 48] == 0 || Game1.stage[((int)Position.X + 38) / 48, ((int)Position.Y + 24) / 48] > 40)))
+            {
+                if (!carry)
+                {
+                    if (ground)
+                    {
+                        Direction = SpriteEffects.None;
+                        if (velocity.X < 0)
+                        {
+                            velocity.X += 2.5f * accelaration;
+                        }
+                        else if (velocity.X < minvelocity)
+                        {
+                            velocity.X = minvelocity;
+                        }
+                        else if (velocity.X < maxvelocity)
+                        {
+                            velocity.X += accelaration;
+                        }
+                    }
+                    else
+                    {
+                        if (velocity.X < 0)
+                        {
+                            velocity.X += 1.25f * accelaration;
+                        }
+                        else if (velocity.X < minvelocity)
+                        {
+                            velocity.X = minvelocity;
+                        }
+                        else if (velocity.X < maxvelocity)
+                        {
+                            velocity.X += accelaration / 2;
+                        }
+                    }
+                }
+                else
+                {
+                    if (ground)
+                    {
+                        Direction = SpriteEffects.None;
+                        if (velocity.X < 0)
+                        {
+                        }
+                        else if (velocity.X < minvelocity)
+                        {
+
+                        }
+                        else if (velocity.X < maxcarryvelocity)
+                        {
+
+                        }
+                    }
+                    else
+                    {
+                        if (velocity.X < 0)
+                        {
+                        }
+                        else if (velocity.X < minvelocity)
+                        {
+
+                        }
+                        else if (velocity.X < maxcarryvelocity)
+                        {
+
+                        }
+                    }
+                }
+            }
+            else
+            {
+                if (velocity.X < 0)
+                    velocity.X += 1.5f * accelaration;
+                if (velocity.X > 0)
+                    velocity.X -= 1.5f * accelaration;
+                if (velocity.X > -1.5f * accelaration && velocity.X < 1.5f * accelaration)
+                    velocity.X = 0;
+            }
+            Position.X += velocity.X;
+            return this.velocity;
+        }
+
+        private int ziplama = 0;
+        bool basildi = true;
+        public void JumpAndFall(Keys direction)
+        {
+            if (CeilingTouch())
+                velocity.Y = 0;
+            else if (direction == keys[4] && OnGround() && ziplama == 0)
+            {
+                if (basildi)
+                {
+                    basildi = false;
+                    velocity.Y = -(Math.Abs(velocity.X) + (3 * maxvelocity)) / 4;
+                    ziplama = 6;
+                }
+            }
+            else if (direction == keys[4] && !OnGround() && wallkick != 0 && !carry)
+            {
+                if (basildi)
+                {
+                    basildi = false;
+                    if (wallkick < 0 && wd != 1)
+                    {
+                        velocity.X = -maxvelocity / 2;
+                        wd = 1;
+                        velocity.Y = -maxvelocity * 3 / 4;
+                    }
+                    else if (wallkick > 0 && wd != 2)
+                    {
+                        velocity.X = maxvelocity / 2;
+                        wd = 2;
+                        velocity.Y = -maxvelocity * 3 / 4;
+                    }
+                    kicker = true;
+                }
+            }
+            else if (!OnGround())
+            {
+                if (velocity.Y < maxfallvelocity)
+                    velocity.Y += accelaration;
+            }
+            else
+            {
+                velocity.Y = 0;
+                if (ziplama > 0)
+                    ziplama--;
+            }
+            Position.Y += velocity.Y;
+            if (direction != keys[4])
+                basildi = true;
+        }
+
+        Levels tiles = new Levels();
+        private bool CeilingTouch()
+        {
+            SideCrash();
+            if (velocity.Y <= 0)
+            {
+                if ((Game1.stage[((int)Position.X + 36) / 48, ((int)Position.Y - 24) / 48] > 0 && Game1.stage[((int)Position.X + 36) / 48, ((int)Position.Y - 24) / 48] < 41) || (Game1.stage[((int)Position.X + 12) / 48, ((int)Position.Y - 24) / 48] > 0 && Game1.stage[((int)Position.X + 12) / 48, ((int)Position.Y - 24) / 48] < 41))
+                {
+                    Position.Y += 48 - ((Position.Y - 24) % 48);
+                    return true;
+                }
+                else
+                    return false;
+            }
+            else
+                return false;
+        }
+
+        int wallkick = 0;
+        bool kicker = true;
+        private bool SideCrash()
+        {
+            if (wallkicker > 0)
+                wallkicker--;
+            if (wallkick > 0)
+                wallkick--;
+            else if (wallkick < 0)
+                wallkick++;
+            if (velocity.X >= 0 && ((Game1.stage[((int)Position.X + 37) / 48, ((int)Position.Y + 60) / 48] > 0 && Game1.stage[((int)Position.X + 37) / 48, ((int)Position.Y + 60) / 48] < 41) || (Game1.stage[((int)Position.X + 37) / 48, ((int)Position.Y - 12) / 48] > 0 && Game1.stage[((int)Position.X + 37) / 48, ((int)Position.Y - 12) / 48] < 41) || (Game1.stage[((int)Position.X + 37) / 48, ((int)Position.Y + 24) / 48] > 0 && Game1.stage[((int)Position.X + 37) / 48, ((int)Position.Y + 24) / 48] < 41)))
+            {
+                if (kicker && Game1.stage[((int)Position.X + 37) / 48, ((int)Position.Y + 24) / 48] > 0)
+                {
+                    if (Math.Abs(velocity.X) > maxvelocity / 4)
+                    {
+                        wallkick = -6;
+                        Direction = SpriteEffects.FlipHorizontally;
+                    }
+                    wallkicker = 60;
+                    kicker = false;
+                }
+                walker = 0;
+                Position.X -= ((Position.X + 38) % 48);
+                velocity.X = 0;
+                return true;
+            }
+            if (velocity.X <= 0 && ((Game1.stage[((int)Position.X + 11) / 48, ((int)Position.Y + 60) / 48] > 0 && Game1.stage[((int)Position.X + 11) / 48, ((int)Position.Y + 60) / 48] < 41) || (Game1.stage[((int)Position.X + 11) / 48, ((int)Position.Y - 12) / 48] > 0 && Game1.stage[((int)Position.X + 11) / 48, ((int)Position.Y - 12) / 48] < 41)) || (Game1.stage[((int)Position.X + 11) / 48, ((int)Position.Y + 24) / 48] > 0 && Game1.stage[((int)Position.X + 11) / 48, ((int)Position.Y + 24) / 48] < 41))
+            {
+                if (kicker && Game1.stage[((int)Position.X + 11) / 48, ((int)Position.Y + 24) / 48] > 0)
+                {
+                    if (Math.Abs(velocity.X) > maxvelocity / 4)
+                    {
+                        wallkick = 6;
+                        Direction = SpriteEffects.None;
+                    }
+                    wallkicker = 60;
+                    kicker = false;
+                }
+                walker = 0;
+                Position.X += 36 - ((Position.X + 46) % 48);
+                velocity.X = 0;
+                return true;
+            }
+            return false;
+        }
+        private bool OnGround()
+        {
+            if ((Game1.stage[((int)Position.X + 36) / 48, ((int)Position.Y + 72) / 48] > 0 && Game1.stage[((int)Position.X + 36) / 48, ((int)Position.Y + 72) / 48] < 41) || (Game1.stage[((int)Position.X + 12) / 48, ((int)Position.Y + 72) / 48] > 0 && Game1.stage[((int)Position.X + 12) / 48, ((int)Position.Y + 72) / 48] < 41))
+            {
+                Position.Y -= ((Position.Y + 72) % 48);
+                kicker = true;
+                wallkicker = 0;
+                wd = 0;
+                return true;
+            }
+            else
+                return false;
+        }
+
+        int walker = 1;
+        int wallkicker = 0;
+        public int Animate()
+        {
+            C++;
+            if (C == 7)
+                C = 0;
+            if (Math.Abs(velocity.X) > 0f * accelaration && OnGround())
+            {
+                animation = walker;
+                if (C == 2)
+                {
+                    animation++;
+                    if (animation >= 7)
+                        animation = 1;
+                    walker = animation;
+                }
+            }
+            else if (wallkicker > 0 && velocity.Y <= 0)
+                animation = 7;
+            else if (!OnGround() && velocity.Y < 0)
+            {
+                if (animation <= 3)
+                    animation = 2;
+                else
+                    animation = 5;
+            }
+            else if (!OnGround())
+                animation = 8;
+            else
+                animation = 0;
+            Camera = new Vector2(Position.X - 400, Position.Y - 300);
+            if (Camera.X < -24)
+                Camera.X = -24;
+            else if (Camera.X > -24 + (120 * 48) - 800)
+                Camera.X = -24 + (120 * 48) - 800;
+            if (Camera.Y < -24)
+                Camera.Y = -24;
+            else if (Camera.Y > -24 + (50 * 48) - 600)
+                Camera.Y = -24 + (50 * 48) - 600;
+            return this.animation * 16;
+        }
+    }
+}
